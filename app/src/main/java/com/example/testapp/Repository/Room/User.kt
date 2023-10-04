@@ -1,4 +1,4 @@
-package com.example.testapp.Room
+package com.example.testapp.Repository.Room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

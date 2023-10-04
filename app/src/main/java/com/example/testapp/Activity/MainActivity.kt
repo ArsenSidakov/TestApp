@@ -9,10 +9,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
-import com.example.testapp.Room.User
+import com.example.testapp.Repository.Room.User
 import com.example.testapp.ViewModel.MainViewModel
 import com.example.testapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -26,9 +28,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result: ActivityResult ->
@@ -39,26 +38,26 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Пользователь удален", Toast.LENGTH_LONG).show()
             }
         }
-//Слушатель нажатий EditText(Проверка условий ввода Login)
+//Слушатель нажатий ELogin
+        mainViewModel.liveDataLoginView.observe(this) {
+            binding.loginView.text = mainViewModel.liveDataLoginView.value.toString()
+        }
         binding.loginEd.addTextChangedListener {
-            mainViewModel.livedataView.observe(this) {
-                binding.loginView.text = mainViewModel.livedataView.value.toString()
-            }
-            mainViewModel.livedataEd.value = binding.loginEd.text.toString()
-            mainViewModel.login()
+            mainViewModel.liveDataLoginEd.value = binding.loginEd.text.toString()
+            mainViewModel.checkLogin()
         }
-//Слушатель нажатий EditText(Проверка условий ввода Password)
+//Слушатель нажатий Password
+        mainViewModel.liveDataPassView.observe(this) {
+            binding.passView.text = mainViewModel.liveDataPassView.value.toString()
+        }
         binding.passwordEd.addTextChangedListener {
-            mainViewModel.livedataView1.observe(this) {
-                binding.passView.text = mainViewModel.livedataView1.value.toString()
-            }
-            mainViewModel.livedataEd1.value = binding.passwordEd.text.toString()
-            mainViewModel.password()
+            mainViewModel.liveDataPassEd.value = binding.passwordEd.text.toString()
+            mainViewModel.checkPassword()
         }
-//Создание пользователя по нажатию на кнопку Ок
 
+//Слушатель нажатий OK
         binding.button.setOnClickListener {
-            if (mainViewModel.log == 1 && mainViewModel.pass == 1) {
+            if (mainViewModel.checkResultLogin == 1 && mainViewModel.chekResultPassword == 1) {
                 val intent = Intent(this, SecondActivity::class.java).apply {
                     putExtra("key2", binding.loginEd.text.toString())
                 }
@@ -79,14 +78,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        Thread{
-        mainViewModel.room.getdao().select().forEach {
+        mainViewModel.liveDataCheckingUser.observe(this) {value->
                 val intent = Intent(this, SecondActivity::class.java).apply {
-                    putExtra("key2"," ${it.login}")
+                    putExtra("key2"," $value")
                 }
                 launcher?.launch(intent)
             }
-        }.start()
+        }
     }
-}
+
 

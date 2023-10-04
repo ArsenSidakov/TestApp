@@ -1,21 +1,12 @@
 package com.example.testapp.Activity
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.Settings
-import android.widget.Toast
-import android.window.OnBackInvokedCallback
 import androidx.activity.OnBackPressedCallback
-import androidx.lifecycle.ViewModelProvider
-import com.example.testapp.Room.Bdroom
-import com.example.testapp.Room.User
 import com.example.testapp.ViewModel.MainViewModel
 import com.example.testapp.databinding.ActivitySecondBinding
-import kotlin.concurrent.thread
-import kotlin.system.exitProcess
 
 class SecondActivity : AppCompatActivity() {
     lateinit var binding: ActivitySecondBinding

@@ -1,10 +1,8 @@
-package com.example.testapp.Room
+package com.example.testapp.Repository.Room
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 
 @Dao
