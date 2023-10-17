@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
         companion object {
             fun getdb(context: Context): Bdroom {
                 return Room.databaseBuilder(
-                    context.applicationContext,
+                    context,
                     Bdroom::class.java,
                     "room.db"
                 ).build()

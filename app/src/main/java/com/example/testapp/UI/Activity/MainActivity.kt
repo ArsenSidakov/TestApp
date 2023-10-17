@@ -3,6 +3,7 @@ package com.example.testapp.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -32,9 +33,9 @@ class MainActivity : AppCompatActivity() {
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
-                Thread {
-                    mainViewModel.room.getdao().delete()
-                }.start()
+                CoroutineScope(Dispatchers.IO).launch {
+                    mainViewModel.deleteDB()
+                }
                 Toast.makeText(this, "Пользователь удален", Toast.LENGTH_LONG).show()
             }
         }
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.loginEd.addTextChangedListener {
             mainViewModel.liveDataLoginEd.value = binding.loginEd.text.toString()
-            mainViewModel.checkLogin()
+            mainViewModel. checkLogin()
         }
 //Слушатель нажатий Password
         mainViewModel.liveDataPassView.observe(this) {
@@ -56,8 +57,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 //Слушатель нажатий OK
-        binding.button.setOnClickListener {
-            if (mainViewModel.checkResultLogin == 1 && mainViewModel.chekResultPassword == 1) {
+        binding.buttonOK.setOnClickListener {
+            if (mainViewModel.checkAll()) {
                 val intent = Intent(this, SecondActivity::class.java).apply {
                     putExtra("key2", binding.loginEd.text.toString())
                 }
@@ -67,9 +68,7 @@ class MainActivity : AppCompatActivity() {
                     binding.loginEd.text.toString(),
                     binding.passwordEd.text.toString()
                 )
-                Thread {
-                    mainViewModel.room.getdao().insert(user)
-                }.start()
+                mainViewModel.insertDB(user)
 
             } else {
                 Toast.makeText(this, "Пароль или логин введены не правильно", Toast.LENGTH_LONG)
@@ -78,12 +77,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel.liveDataCheckingUser.observe(this) {value->
-                val intent = Intent(this, SecondActivity::class.java).apply {
-                    putExtra("key2"," $value")
-                }
-                launcher?.launch(intent)
-            }
+
+
+                 mainViewModel.selectDB()
+
+
+//        Log.d("MyLog","$login")
+//                val intent = Intent(this, SecondActivity::class.java).apply {
+//                    putExtra("key2"," $login")
+//                }
+//                launcher?.launch(intent)
+
         }
     }
 

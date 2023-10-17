@@ -20,7 +20,7 @@ class SecondActivity : AppCompatActivity() {
         setContentView(binding.root)
         var name = intent.getStringExtra("key2")
         binding.nameView.text = "Hello $name"
-        timerCounDouwn(10000)
+        timerCounDouwn(360000)
         binding.backButton.setOnClickListener {
             finishAffinity()
         }
@@ -31,9 +31,7 @@ class SecondActivity : AppCompatActivity() {
             finish()
         }
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-
-            }
+            override fun handleOnBackPressed() {}
         })
     }
     private fun timerCounDouwn(time: Long) {
@@ -44,9 +42,9 @@ class SecondActivity : AppCompatActivity() {
 
             }
             override fun onFinish() {
-               val i = Intent()
-                i.putExtra("1", 1)
-                setResult(RESULT_OK,i)
+               val resultForMainActivity = Intent()
+                resultForMainActivity.putExtra("1", 1)
+                setResult(RESULT_OK,resultForMainActivity)
                 finish()
             }
         }.start()
